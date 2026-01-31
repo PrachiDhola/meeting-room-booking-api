@@ -72,7 +72,7 @@ This is a complete meeting room booking system that allows users to:
 - **Axios** - HTTP client
 - **Context API** - State management (Auth, Toast)
 
-## 📁 Project Structure
+## 📁 Project Structures
 
 ```
 Reassessment/
