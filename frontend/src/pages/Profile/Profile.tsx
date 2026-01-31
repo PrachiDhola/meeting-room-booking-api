@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
+import { useToast } from '../../contexts/ToastContext'
 import { authApi } from '../../services/api'
 
 const Profile = () => {
   const { user, logout } = useAuth()
+  const { showToast } = useToast()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -44,39 +46,64 @@ const Profile = () => {
       setLoading(true)
       await authApi.updateProfile(formData.name, formData.email)
       setSuccess(true)
-      // Update local storage
       const updatedUser = { ...user!, name: formData.name, email: formData.email }
       localStorage.setItem('user', JSON.stringify(updatedUser))
-      window.location.reload() // Refresh to update context
+      showToast('Profile updated successfully', 'success')
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update profile')
+      const errorMsg = err.response?.data?.message || 'Failed to update profile'
+      setError(errorMsg)
+      showToast(errorMsg, 'error')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-4xl font-bold text-gray-800 mb-8">Profile Settings</h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16">
+        <div className="section-container">
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-4">Profile Settings</h1>
+          <p className="text-xl text-blue-100">Manage your account information</p>
+        </div>
+      </div>
 
-          <div className="bg-white rounded-xl shadow-md p-8">
+      <div className="section-container py-12">
+        <div className="max-w-2xl mx-auto">
+          <div className="card p-8 md:p-10">
+            <div className="text-center mb-8">
+              <div className="text-6xl mb-4">👤</div>
+              <h2 className="text-2xl font-bold text-gray-900">Account Information</h2>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                  {error}
+                <div className="alert-error">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{error}</span>
+                  </div>
                 </div>
               )}
 
               {success && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
-                  Profile updated successfully!
+                <div className="alert-success">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Profile updated successfully!</span>
+                  </div>
                 </div>
               )}
 
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                   Full Name
                 </label>
                 <input
@@ -86,12 +113,12 @@ const Profile = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="input-field"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                   Email Address
                 </label>
                 <input
@@ -101,26 +128,31 @@ const Profile = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="input-field"
                 />
               </div>
 
-              <div className="flex gap-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02]"
-                >
-                  {loading ? 'Updating...' : 'Update Profile'}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full text-lg py-4"
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="spinner h-5 w-5"></div>
+                    Updating...
+                  </span>
+                ) : (
+                  'Update Profile'
+                )}
+              </button>
             </form>
 
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Account Actions</h2>
+            <div className="mt-8 pt-8 border-t-2 border-gray-200">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Account Actions</h3>
               <button
                 onClick={logout}
-                className="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700 transition-all"
+                className="bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition-all transform hover:scale-105 font-semibold w-full"
               >
                 Logout
               </button>

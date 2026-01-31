@@ -27,73 +27,106 @@ const Rooms = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-2 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16">
+        <div className="section-container">
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-4">
             All Meeting Rooms
           </h1>
-          <p className="text-gray-600 text-lg">Browse and explore all available meeting rooms</p>
+          <p className="text-xl text-blue-100">
+            Browse and explore all available meeting rooms
+          </p>
         </div>
+      </div>
 
-      {loading && (
-        <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading rooms...</p>
-        </div>
-      )}
+      <div className="section-container py-12">
+        {loading && (
+          <div className="text-center py-20">
+            <div className="spinner h-12 w-12 mx-auto"></div>
+            <p className="mt-6 text-gray-600 text-lg">Loading rooms...</p>
+          </div>
+        )}
 
-      {error && (
-        <div className="text-center py-12">
-          <p className="text-red-600 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
-      )}
-
-      {!loading && !error && (
-        <>
-          {rooms.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-600 text-lg">No rooms available at the moment.</p>
+        {error && (
+          <div className="text-center py-20 max-w-2xl mx-auto">
+            <div className="alert-error">
+              <p className="font-semibold text-lg mb-4">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="btn-primary"
+              >
+                Retry
+              </button>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {rooms.map((room) => (
-                <div
-                  key={room.id}
-                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:scale-105"
+          </div>
+        )}
+
+        {!loading && !error && (
+          <>
+            {rooms.length === 0 ? (
+              <div className="text-center py-20">
+                <div className="text-6xl mb-4">🏢</div>
+                <p className="text-gray-600 text-lg mb-4">No rooms available at the moment.</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="btn-primary"
                 >
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-xl font-semibold text-gray-800">
-                        {room.name}
-                      </h3>
-                      <span className="text-2xl">🏢</span>
-                    </div>
-                    <p className="text-gray-600 mb-4">{room.location}</p>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                        <span className="font-semibold">👥 {room.capacity} people</span>
-                      </span>
-                    </div>
-                    <Link
-                      to={`/rooms/${room.id}`}
-                      className="block w-full text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 font-medium"
-                    >
-                      View Details
-                    </Link>
-                  </div>
+                  Refresh
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="mb-6 flex items-center justify-between">
+                  <p className="text-gray-600">
+                    Found <span className="font-bold text-blue-600">{rooms.length}</span> {rooms.length === 1 ? 'room' : 'rooms'}
+                  </p>
                 </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {rooms.map((room, index) => (
+                    <div
+                      key={room.id}
+                      className="room-card animate-fadeIn"
+                      style={{ animationDelay: `${index * 0.05}s` }}
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                          {room.name}
+                        </h3>
+                        <p className="text-gray-600 flex items-center gap-2">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            {room.location}
+                          </p>
+                        </div>
+                        <div className="text-4xl">🏢</div>
+                      </div>
+                      
+                      <div className="mb-6">
+                        <span className="badge-primary">
+                          <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                          Capacity: {room.capacity} people
+                        </span>
+                      </div>
+                      
+                      <Link
+                        to={`/rooms/${room.id}`}
+                        className="btn-primary w-full text-center block"
+                      >
+                        View Details & Book
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        )}
       </div>
     </div>
   )

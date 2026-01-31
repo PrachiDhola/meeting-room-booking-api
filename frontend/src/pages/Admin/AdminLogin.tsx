@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
 
-const Login = () => {
+const AdminLogin = () => {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { adminLogin } = useAuth()
   const { showToast } = useToast()
   const [formData, setFormData] = useState({
     email: '',
@@ -33,11 +33,11 @@ const Login = () => {
 
     try {
       setLoading(true)
-      await login(formData.email, formData.password)
-      showToast('Login successful!', 'success')
-      navigate('/dashboard')
+      await adminLogin(formData.email, formData.password)
+      showToast('Admin login successful!', 'success')
+      navigate('/admin/dashboard')
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || 'Invalid email or password'
+      const errorMsg = err.response?.data?.message || err.message || 'Invalid admin credentials'
       setError(errorMsg)
       showToast(errorMsg, 'error')
     } finally {
@@ -46,15 +46,15 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="form-container animate-fadeIn">
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">🔐</div>
           <h2 className="text-3xl font-extrabold gradient-text mb-2">
-            Welcome Back
+            Admin Login
           </h2>
           <p className="text-gray-600">
-            Sign in to your account to continue
+            Access the admin panel to manage rooms and bookings
           </p>
         </div>
 
@@ -72,7 +72,7 @@ const Login = () => {
 
           <div>
             <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-              Email Address
+              Admin Email
             </label>
             <input
               id="email"
@@ -83,7 +83,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               className="input-field"
-              placeholder="john.doe@example.com"
+              placeholder="admin@example.com"
             />
           </div>
 
@@ -116,17 +116,17 @@ const Login = () => {
                   Signing in...
                 </span>
               ) : (
-                'Sign In'
+                'Login as Admin'
               )}
             </button>
           </div>
 
           <div className="text-center">
             <p className="text-gray-600">
-              Don't have an account?{' '}
-              <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
-                Create one now
-              </Link>
+              Not an admin?{' '}
+              <a href="/login" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                Customer Login
+              </a>
             </p>
           </div>
         </form>
@@ -135,4 +135,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default AdminLogin

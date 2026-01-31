@@ -6,6 +6,7 @@ interface User {
   id: number
   email: string
   name: string
+  role?: 'CUSTOMER' | 'ADMIN' | 'PUBLIC'
 }
 
 interface AuthContextType {
@@ -13,9 +14,11 @@ interface AuthContextType {
   token: string | null
   login: (email: string, password: string) => Promise<void>
   register: (name: string, email: string, password: string) => Promise<void>
+  adminLogin: (email: string, password: string) => Promise<void>
   logout: () => void
   isLoading: boolean
   isAuthenticated: boolean
+  isAdmin: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -76,14 +79,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('user')
   }
 
+  const adminLogin = async (email: string, password: string) => {
+    try {
+      // For now, we'll use the same login endpoint but check for admin role
+      // In a real app, you'd have a separate admin login endpoint
+      const response = await authApi.login(email, password)
+      const { token: newToken, user: userData } = response
+
+      // Check if user is admin (for now, we'll check email or add role to response)
+      // This is a temporary solution - backend should return role
+      if (userData.email.includes('admin') || userData.email === 'admin@example.com') {
+        const adminUser = { ...userData, role: 'ADMIN' as const }
+        setToken(newToken)
+        setUser(adminUser)
+        localStorage.setItem('token', newToken)
+        localStorage.setItem('user', JSON.stringify(adminUser))
+      } else {
+        throw new Error('Access denied. Admin credentials required.')
+      }
+    } catch (error) {
+      throw error
+    }
+  }
+
   const value: AuthContextType = {
     user,
     token,
     login,
     register,
+    adminLogin,
     logout,
     isLoading,
     isAuthenticated: !!token && !!user,
+    isAdmin: user?.role === 'ADMIN' || false,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -52,6 +52,21 @@ export const roomApi = {
     const response = await api.get<Booking[]>(`/rooms/${id}/bookings`)
     return response.data
   },
+
+  // Admin endpoints
+  create: async (room: Omit<Room, 'id'>): Promise<Room> => {
+    const response = await api.post<Room>('/rooms', room)
+    return response.data
+  },
+
+  update: async (id: number, room: Partial<Room>): Promise<Room> => {
+    const response = await api.put<Room>(`/rooms/${id}`, room)
+    return response.data
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/rooms/${id}`)
+  },
 }
 
 // Booking API calls
