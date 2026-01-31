@@ -1,0 +1,172 @@
+{
+	"info": {
+		"name": "Meeting Room Booking API",
+		"description": "Complete API collection for Meeting Room Booking System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["health"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Rooms",
+			"item": [
+				{
+					"name": "Get All Rooms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rooms",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rooms"]
+						}
+					}
+				},
+				{
+					"name": "Get Room by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rooms/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rooms", "1"]
+						}
+					}
+				},
+				{
+					"name": "Create Room",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Conference Room C\",\n  \"capacity\": 12,\n  \"location\": \"Third Floor - Building A\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/rooms",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rooms"]
+						}
+					}
+				},
+				{
+					"name": "Delete Room",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rooms/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rooms", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Room Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/rooms/1/bookings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "rooms", "1", "bookings"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "GET - Get All Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings"]
+						},
+						"description": "Get all bookings from the system. Returns list of all bookings with room information."
+					}
+				},
+				{
+					"name": "GET - Get Booking by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings", "1"]
+						},
+						"description": "Get a specific booking by its ID. Replace {1} with actual booking ID."
+					}
+				},
+				{
+					"name": "POST - Create Booking",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roomId\": 1,\n  \"title\": \"Team Planning Meeting\",\n  \"startTime\": \"2026-02-05T10:00:00Z\",\n  \"endTime\": \"2026-02-05T11:00:00Z\",\n  \"createdBy\": \"user@company.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "DELETE - Delete Booking",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "bookings", "1"]
+						},
+						"description": "Cancel/delete a booking by ID. Replace {1} with actual booking ID."
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}
